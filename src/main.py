@@ -12,9 +12,14 @@ templates = Jinja2Templates(directory="./templates")
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-# @app.post("/add-notes")
-# def post_notes("/"):
-#     return notes
+app.post("/add-notes")
+def post_notes(request: Request):
+    note = input("Enter the note: ")
+    with open("note.txt", "a") as file:
+        file.write(note + "\n")
+    print("Note added successfully!")
+    return templates.TemplateResponse("index.html", {"request": request})
+
 
 if __name__ == "__main__":
     import uvicorn
