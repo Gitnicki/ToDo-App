@@ -5,7 +5,6 @@ import mysql.connector
 
 app =FastAPI(title="ToDo-List", version="0.0.1", openapi_url="/openapi.json")
 
-router = APIRouter()
 templates = Jinja2Templates(directory="./templates")
 
 @app.get('/', response_class=HTMLResponse)
@@ -14,7 +13,7 @@ def read_root(request: Request):
 
 app.post("/add-notes")
 def post_notes(request: Request):
-    note = input("Enter the note: ")
+    note = input("eingabe")
     with open("note.txt", "a") as file:
         file.write(note + "\n")
     print("Note added successfully!")
