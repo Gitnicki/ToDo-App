@@ -11,7 +11,8 @@ templates = Jinja2Templates(directory="./templates")
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-app.post("/add-notes")
+#Post route zur eingabe der todos
+app.post("/")
 def post_notes(request: Request):
     note = input("eingabe")
     with open("note.txt", "a") as file:
