@@ -57,7 +57,7 @@ def insert_data(connection, query, data):
 
 def add_notes(todoitem, category):
     cursor = db_connection.cursor()
-    sql = "INSERT INTO tasks (todoitem, category) VALUES (%s, %s)"
+    sql = "INSERT INTO notes (todoitem, category) VALUES (%s, %s)"
     val = (todoitem, category)
     cursor.execute(sql, val)
     db_connection.commit()
