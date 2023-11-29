@@ -1,18 +1,17 @@
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi import APIRouter, Request, FastAPI
+from fastapi import Request, FastAPI
 import mysql.connector 
 
 app =FastAPI(title="ToDo-List", version="0.0.1", openapi_url="/openapi.json")
-
 templates = Jinja2Templates(directory="./templates")
 
+#root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-#Post route zur eingabe der todos
-app.post("/")
+app.post("/add-notes")
 def post_notes(request: Request):
     note = input("eingabe")
     with open("note.txt", "a") as file:

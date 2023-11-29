@@ -5,10 +5,9 @@ from mysql.connector import Error
 from dotenv import load_dotenv, dotenv_values
 
 # load_dotenv()
-
 config = dotenv_values(".env")
 
-
+# Serverconnection herstellen
 def create_server_connection():
     connection = None
     host_name = config.get("DB_HOST")
@@ -56,16 +55,24 @@ def insert_data(connection, query, data):
     except Error as err:
         print(f"Error: '{err}'")
 
-def updateNotes(connection, id, todoitem, itemstatus, category):
-    cursor = connection.cursor()
-    query = "INSERT INTO notes (id, todoitem, itemstatus, category) VALUES (%s, %s, %s)"
-    data = (id, todoitem, itemstatus, category)
-    try:
-        cursor.execute(query, data)
-        connection.commit()
-        print("Data inserted successfully")
-    except Error as err:
-        print(f"Error: '{err}'")
+def add_notes(todoitem, category):
+    cursor = db_connection.cursor()
+    sql = "INSERT INTO tasks (todoitem, category) VALUES (%s, %s)"
+    val = (todoitem, category)
+    cursor.execute(sql, val)
+    db_connection.commit()
+    print("Task added successfully!")
+
+def view_tasks():
+    cursor = db_connection.cursor()
+    sql = "SELECT * FROM tasks"
+    cursor.execute(sql)
+    tasks = cursor.fetchall()
+    if (tasks):
+        for task in tasks:
+            print(f"Task ID: {task[0]}, Task Name: {task[1]}, Description: {task[2]}, Status: {'Open' if task[3] else 'Finished'}")
+    else:
+        print("No Tasks in the DataBase")  
 
 
 # Establish a database connection
