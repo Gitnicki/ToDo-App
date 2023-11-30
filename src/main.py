@@ -45,13 +45,29 @@ def insertTaskintoDB(connection, taskname, taskcategory):
     cursor = connection.cursor()
     query = "INSERT INTO tasks(taskname, taskcategory) VALUES(%s, %s)" 
     data = (taskname, taskcategory)
-    print(data)
     try:
         cursor.execute(query, data)
         connection.commit()
         print("Inserted Data succesfully")
     except Error as err:
         print(f"Error: '{err}'")
+
+def deleteTaskDB(connection, id):
+    cursor = connection.cursor()
+    query = "DELETE FROM tasks WHERE id = %s" 
+    try:
+        cursor.execute(query, id)
+        connection.commit()
+        print(id)
+        print("Data succesfully deleted")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+def find_task(id):
+    for task in task:
+        if id == task.id:
+            return task
+    return None
     
 def execute_query(connection, query):
     cursor = connection.cursor()
@@ -84,8 +100,15 @@ def read_root(request: Request):
 @app.post("/", response_class=HTMLResponse)
 def post_tasks(taskname: Annotated[str, Form()], taskcategory: Annotated[str, Form()]):
     connection = create_server_connection()
-    print(taskname)
     insertTaskintoDB(connection, taskname, taskcategory)
+    return RedirectResponse(url="http://localhost:8000/", status_code=303)
+
+@app.delete('/delete/<int:task_id>', response_class=HTMLResponse)
+def delete_task(task):
+    connection = create_server_connection()
+    task_to_delete = deleteTaskDB(connection, id)
+    if (task_to_delete):
+        task.remove(task_to_delete)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 if __name__ == "__main__":
