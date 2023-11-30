@@ -1,7 +1,7 @@
 from typing import Annotated 
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from fastapi import Request, FastAPI, Form
+from fastapi import Request, FastAPI, Form, HTTPException
 import mysql.connector 
 from mysql.connector import Error
 from dotenv import load_dotenv, dotenv_values
@@ -65,7 +65,7 @@ def deleteTaskDB(connection, id):
 
 def updateTasksintoDB(connection, taskstatus):
     cursor = connection.cursor()
-    query = "UPDATE tasks SET status='in progress' WHERE id=%s (task_id)"
+    query = "UPDATE tasks SET taskstatus='in progress' WHERE id=%s"
     try:
         cursor.execute(query)
         connection.commit()
@@ -120,10 +120,12 @@ def delete_task(task):
         task.remove(task_to_delete)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
-@app.get('/update_status/{task_id}')
-def update_status(task_id=int):
-    connection = create_server_connection(connection, task_id)
+@app.get('/update_status/{id}')
+def update_status(id=int):
+    connection = create_server_connection()
     task_to_update = updateTasksintoDB(connection, id)
+    if task_to_update is None:
+        raise HTTPException(status_code=404, detail="Task not found")
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 if __name__ == "__main__":
