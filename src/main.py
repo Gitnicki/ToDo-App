@@ -98,7 +98,6 @@ def select_data(connection, query):
         print(f"Error: '{err}'")
         return None
 
-
 #root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
@@ -121,9 +120,9 @@ def delete_task(task):
         task.remove(task_to_delete)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
-@app.update('/update_status/<int:task_id>')
-def update_status(task):
-    connection = create_server_connection()
+@app.get('/update_status/{task_id}')
+def update_status(task_id=int):
+    connection = create_server_connection(connection, task_id)
     task_to_update = updateTasksintoDB(connection, id)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
