@@ -54,20 +54,21 @@ def insertTaskintoDB(connection, taskname, taskcategory):
 
 def deleteTaskDB(connection, id):
     cursor = connection.cursor()
-    query = "DELETE FROM tasks WHERE id = %s" 
+    query = "DELETE FROM tasks WHERE id = %s"
+    id = [id] 
     try:
         cursor.execute(query, id)
         connection.commit()
-        print(id)
         print("Data succesfully deleted")
     except Error as err:
         print(f"Error: '{err}'")
 
-def updateTasksintoDB(connection, taskstatus):
+def updateTasksintoDB(connection, id):
     cursor = connection.cursor()
     query = "UPDATE tasks SET taskstatus='in progress' WHERE id=%s"
+    id = [id]
     try:
-        cursor.execute(query)
+        cursor.execute(query, id)
         connection.commit()
         print("Taskstatus successfully changed")
     except Error as err:
@@ -112,20 +113,16 @@ def post_tasks(taskname: Annotated[str, Form()], taskcategory: Annotated[str, Fo
     insertTaskintoDB(connection, taskname, taskcategory)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
-@app.delete('/delete/<int:task_id>', response_class=HTMLResponse)
-def delete_task(task):
+@app.post('/delete', response_class=RedirectResponse)
+def delete_task(id: Annotated[int, Form()]):
     connection = create_server_connection()
-    task_to_delete = deleteTaskDB(connection, id)
-    if (task_to_delete):
-        task.remove(task_to_delete)
+    deleteTaskDB(connection, id)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
-@app.get('/update_status/{id}')
-def update_status(id=int):
+@app.post('/update')
+def update_status(id: Annotated[int, Form()]):
     connection = create_server_connection()
-    task_to_update = updateTasksintoDB(connection, id)
-    if task_to_update is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+    updateTasksintoDB(connection, id)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 if __name__ == "__main__":

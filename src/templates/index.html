@@ -54,10 +54,12 @@
                                             <td scope="col">{{task[3]}}</td>
                                             <td scope="col">{{task[4]}}</td>
                                             <td class="d-flex">
-                                                <form action="/delete/{{task[0]}}" method="post" class="w-50">
+                                                <form action="/delete" method="post" class="w-50">
+                                                    <input type="hidden" name="id" value="{{task[0]}}">
                                                     <button type="submit" class="btn btn-danger">Delete</button>
                                                 </form>
-                                                <form action="/update_status/{id}" method="get" class="w-50">
+                                                <form action="/update" method="post" class="w-50">
+                                                    <input type="hidden" name="id" value="{{task[0]}}">
                                                     <button type="submit" class="btn btn-success ms-1">Start</button>
                                                 </form>
                                             </td>
