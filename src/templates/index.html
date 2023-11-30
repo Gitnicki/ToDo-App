@@ -37,6 +37,7 @@
 
                             <table class="table mb-4">
                                 <thead>
+                                    {% for i in tasks %}
                                     <tr>
                                         <th scope="col">No.</th>
                                         <th scope="col">Todo item</th>
@@ -44,15 +45,16 @@
                                         <th scope="col">Category</th>
                                         <th scope="col">Actions</th>
                                     </tr>
+                                    {% endfor %}
                                 </thead>
                                 <tbody>
-                                    {% for task in tasks %}
-                                    <!-- <option value="{{id[0]}}">{{taskname[1]}} {{taskstatus[2]}}</option> -->
+                                    {% for i in tasks %}
                                         <tr>
-                                            <!-- <th scope="row">{{forloop.counter}}</th> -->
-                                            <td>{{task.taskname}}</td>
-                                            <td>{{task.taskstatus}}</td>
-                                            <td>{{task.taskcategory}}</td>
+                                            <th scope="row">1</th>
+                                            <td>{{i.id}}</i<>
+                                            <td>{{i.taskname}}</td>
+                                            <td>{{i.taskstatus}}</td>
+                                            <td>{{i.taskcategory}}</td>
                                             <td class="d-flex">
                                                 <form class="w-50">
                                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -62,37 +64,9 @@
                                                 </form>
                                             </td>
                                         </tr>
-                                            {% endfor %}
-                                    <!-- <tr>
-                                        <th scope="row">2</th>
-                                        <td>Buy groceries for next week</td>
-                                        <td>In progress</td>
-                                        <td>Freizeit</td>
-                                        <td class="d-flex">
-                                            <form class="w-50">
-                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                            </form>
-                                            <form class="w-50">
-                                                <button type="submit" class="btn btn-success ms-1">Finished</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td><s>Buy groceries for next week</s></td>
-                                        <td>Finished</td>
-                                        <td>Freizeit</td>
-                                        <td class="d-flex">
-                                            <form class="w-50">
-                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                            </form>
-                                            <form class="w-50">
-                                                <button type="submit"
-                                                    class=" disabled btn btn-success ms-1">Finished</button>
-                                            </form>
-                                        </td>
-                                    </tr> -->
+                                        {% endfor %}
                                 </tbody>
+                                
                             </table>
 
                         </div>
