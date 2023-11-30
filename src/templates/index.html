@@ -19,7 +19,7 @@
 
                             <h4 class="text-center my-3 pb-3">To Do App</h4>
 
-                            <form action="/" method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
+                            <form action="/task" method="app.post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
                                 <div class="col-12">
                                     <div class="form-outline">
                                         <input type="text" name="eingabe" class="form-control"
@@ -46,10 +46,10 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for note in notes %}
+                                    {% for task in tasks %}
                                         {{ i }}
                                         <tr>
-                                            <th scope="row">{{note[0]}}</th>
+                                            <th scope="row">{{task[0]}}</th>
                                             <td>Buy groceries for next week</td>
                                             <td>open</td>
                                             <td>Freizeit</td>
@@ -63,7 +63,7 @@
                                             </td>
                                         </tr>
                                             {% endfor %}
-                                    <tr>
+                                    <!-- <tr>
                                         <th scope="row">2</th>
                                         <td>Buy groceries for next week</td>
                                         <td>In progress</td>
@@ -91,7 +91,7 @@
                                                     class=" disabled btn btn-success ms-1">Finished</button>
                                             </form>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
 

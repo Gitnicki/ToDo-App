@@ -32,9 +32,28 @@ def create_server_connection():
 def getOptionalSortedTaskFromDB(connection, sorted):
     cursor = connection.cursor()
     if sorted:
-        query = "SELECT u.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id ORDER BY total DESC"
-    else:
-        query = "SELECT u.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id;"
+        query = "SELECT t.id, t.taskname, t.taskstatus, t.taskcategory FROM tasks"
+    # else:
+    #     query = "SELECT t.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id;"
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+    except Error as err:
+        print(f"Error: '{err}'")
+        return None
+    
+def execute_query(connection, query):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        connection.commit()
+        print("Query successful")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+def select_data(connection, query):
+    cursor = connection.cursor()
     try:
         cursor.execute(query)
         result = cursor.fetchall()
@@ -43,19 +62,40 @@ def getOptionalSortedTaskFromDB(connection, sorted):
         print(f"Error: '{err}'")
         return None
 
+
+def insert_data(connection, query, data):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query, data)
+        connection.commit()
+        print("Data inserted successfully")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+@app.get("/", response_class=HTMLResponse)
+def get_tasks(
+    request: Request,
+):
+    connection = create_server_connection()
+    sorted = True
+    tasks = getOptionalSortedTaskFromDB(connection, sorted)
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "tasks": tasks}
+    )
+
 #root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
      
     connection = create_server_connection()
     cursor = connection.cursor()
-    query = "SELECT id, todoitem, itemstatus, category FROM notes;"
+    query = "SELECT id, taskname, taskstatus, taskcategory FROM tasks;"
     cursor.execute(query)
     notes = cursor.fetchall()    
-    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+    return templates.TemplateResponse("index.html", {"request": request, "tasks": tasks})
 
-@app.post("/", response_class=HTMLResponse)
-def post_notes(request: Request, eingabe: Annotated[str, Form()], category: Annotated[str, Form()]
+@app.post("/task", response_class=HTMLResponse)
+def post_tasks(request: Request, eingabe: Annotated[str, Form()], category: Annotated[str, Form()]
 ): 
     print(eingabe, category)
     # with open("note.txt", "a") as file:
