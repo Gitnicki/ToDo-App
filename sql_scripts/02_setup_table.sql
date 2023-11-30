@@ -1,8 +1,8 @@
 USE todo;
 
-CREATE TABLE IF NOT EXISTS notes (
+CREATE TABLE IF NOT EXISTS task (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    todoitem VARCHAR(255) NOT NULL,
-    itemstatus VARCHAR(255) NOT NULL,
-    category VARCHAR(255) NOT NULL
+    taskname VARCHAR(255) NOT NULL,
+    taskstatus VARCHAR(255) NOT NULL,
+    taskcategory VARCHAR(255) NOT NULL
 );

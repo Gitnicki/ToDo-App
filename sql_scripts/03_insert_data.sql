@@ -1,5 +1,5 @@
 USE todo;
 
-INSERT INTO notes  (todoitem, itemstatus, category) 
+INSERT INTO task  (taskname, taskstatus, taskcategory) 
 VALUES ("Bernd muss mal wieder an die Luft", "open", "Freizeit");
 

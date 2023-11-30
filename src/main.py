@@ -29,6 +29,20 @@ def create_server_connection():
 
     return connection
 
+def getOptionalSortedTaskFromDB(connection, sorted):
+    cursor = connection.cursor()
+    if sorted:
+        query = "SELECT u.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id ORDER BY total DESC"
+    else:
+        query = "SELECT u.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id;"
+    try:
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+    except Error as err:
+        print(f"Error: '{err}'")
+        return None
+
 #root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
@@ -48,7 +62,6 @@ def post_notes(request: Request, eingabe: Annotated[str, Form()], category: Anno
     #     file.write(note + "\n")
     # print("Note added successfully!")
     return templates.TemplateResponse("index.html", {"request": request})
-
 
 if __name__ == "__main__":
     import uvicorn
