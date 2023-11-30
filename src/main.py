@@ -63,6 +63,16 @@ def deleteTaskDB(connection, id):
     except Error as err:
         print(f"Error: '{err}'")
 
+def updateTasksintoDB(connection, taskstatus):
+    cursor = connection.cursor()
+    query = "UPDATE tasks SET status='in progress' WHERE id=%s (task_id)"
+    try:
+        cursor.execute(query)
+        connection.commit()
+        print("Taskstatus successfully changed")
+    except Error as err:
+        print(f"Error: '{err}'")
+
 def find_task(id):
     for task in task:
         if id == task.id:
@@ -109,6 +119,12 @@ def delete_task(task):
     task_to_delete = deleteTaskDB(connection, id)
     if (task_to_delete):
         task.remove(task_to_delete)
+    return RedirectResponse(url="http://localhost:8000/", status_code=303)
+
+@app.update('/update_status/<int:task_id>')
+def update_status(task):
+    connection = create_server_connection()
+    task_to_update = updateTasksintoDB(connection, id)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 if __name__ == "__main__":
