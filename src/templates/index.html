@@ -19,7 +19,7 @@
 
                             <h4 class="text-center my-3 pb-3">To Do App</h4>
 
-                            <form action="/task" method="app.post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
+                            <form action="/" method="post" class="row row-cols-lg-auto g-3 justify-content-center align-items-center mb-4 pb-2">
                                 <div class="col-12">
                                     <div class="form-outline">
                                         <input type="text" name="eingabe" class="form-control"
@@ -37,7 +37,6 @@
 
                             <table class="table mb-4">
                                 <thead>
-                                    {% for i in tasks %}
                                     <tr>
                                         <th scope="col">No.</th>
                                         <th scope="col">Todo item</th>
@@ -45,16 +44,15 @@
                                         <th scope="col">Category</th>
                                         <th scope="col">Actions</th>
                                     </tr>
-                                    {% endfor %}
                                 </thead>
                                 <tbody>
-                                    {% for i in tasks %}
+                                    {% for task in tasks %}
                                         <tr>
-                                            <th scope="row">1</th>
-                                            <td>{{i.id}}</i<>
-                                            <td>{{i.taskname}}</td>
-                                            <td>{{i.taskstatus}}</td>
-                                            <td>{{i.taskcategory}}</td>
+                                            <th scope="row">{{task[0]}}</th>
+                                            <td scope="col">{{task[1]}}</i<>
+                                            <td scope="col">{{task[2]}}</td>
+                                            <td scope="col">{{task[3]}}</td>
+                                            <td scope="col">{{task[4]}}</td>
                                             <td class="d-flex">
                                                 <form class="w-50">
                                                     <button type="submit" class="btn btn-danger">Delete</button>

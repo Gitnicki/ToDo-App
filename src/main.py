@@ -1,5 +1,5 @@
 from typing import Annotated 
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import Request, FastAPI, Form
 import mysql.connector 
@@ -34,8 +34,6 @@ def getOptionalSortedTaskFromDB(connection, sorted):
     if sorted:
         query = "SELECT id, taskname, taskstatus, taskcategory FROM tasks" 
         print("hello")
-    # else:
-    #     query = "SELECT t.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id;"
     try:
         cursor.execute(query)
         result = cursor.fetchall()
@@ -44,6 +42,17 @@ def getOptionalSortedTaskFromDB(connection, sorted):
     except Error as err:
         print(f"Error: '{err}'")
         return None
+    
+def insertTaskintoDB(connection, taskname, taskstatus, taskcategory):
+    cursor = connection.cursor()
+    query = "INSERT INTO tasks(taskname, taskstatus, taskcategory) VALUES(%s, %s, %s)" 
+    data = (taskname, taskstatus, taskcategory)
+    try:
+        cursor.execute(query, data)
+        connection.commit()
+        print("Inserted Data succesfully")
+    except Error as err:
+        print(f"Error: '{err}'")
     
 def execute_query(connection, query):
     cursor = connection.cursor()
@@ -65,16 +74,6 @@ def select_data(connection, query):
         return None
 
 
-def insert_data(connection, query, data):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query, data)
-        connection.commit()
-        print("Data inserted successfully")
-    except Error as err:
-        print(f"Error: '{err}'")
-
-
 #root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
@@ -83,16 +82,13 @@ def read_root(request: Request):
     sorted = True
     task = getOptionalSortedTaskFromDB(connection, sorted)  
     print(task)
-    return templates.TemplateResponse("index.html", {"request": request, "task": task})
+    return templates.TemplateResponse("index.html", {"request": request, "tasks": task})
 
-@app.post("/task", response_class=HTMLResponse)
-def post_tasks(request: Request, eingabe: Annotated[str, Form()], category: Annotated[str, Form()]
-): 
-    print(eingabe, category)
-    # with open("note.txt", "a") as file:
-    #     file.write(note + "\n")
-    # print("Note added successfully!")
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.post("/", response_class=HTMLResponse)
+def post_tasks(taskname: Annotated[str, Form()], taskstatus: Annotated[str, Form()], taskcategory: Annotated[str, Form()]):
+    connection = create_server_connection()
+    insertTaskintoDB(connection, taskname, taskstatus, taskcategory)
+    return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 if __name__ == "__main__":
     import uvicorn
