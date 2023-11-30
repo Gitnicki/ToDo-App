@@ -83,7 +83,7 @@ def read_root(request: Request):
     sorted = True
     task = getOptionalSortedTaskFromDB(connection, sorted)  
     print(task)
-    return templates.TemplateResponse("index.html", {"request": request, "task": task})
+    return templates.TemplateResponse("index.html", {"request": request, "tasks": task})
 
 @app.post("/task", response_class=HTMLResponse)
 def post_tasks(request: Request, eingabe: Annotated[str, Form()], category: Annotated[str, Form()]
