@@ -1,0 +1,16 @@
+Bei Änderungen der COLUMNS in TABLE tasks;
+
+#bei mysql anmelden
+mysql -u root -p
+
+#Datenbank auswählen
+USE todo;
+
+#Table anzeigen lassen
+SHOW TABLES;
+
+#Man sollte dort den TABLE tasks sehen -- dann COLUMNS anzeigen lassen
+SHOW COLUMNS FROM tasks;
+
+#COLUMN von taskstatus ändern auf DEFAULT 'open'
+ALTER TABLE tasks ALTER COLUMN taskstatus SET DEFAULT 'open';
