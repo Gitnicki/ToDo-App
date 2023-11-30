@@ -32,12 +32,14 @@ def create_server_connection():
 def getOptionalSortedTaskFromDB(connection, sorted):
     cursor = connection.cursor()
     if sorted:
-        query = "SELECT t.id, t.taskname, t.taskstatus, t.taskcategory FROM tasks"
+        query = "SELECT id, taskname, taskstatus, taskcategory FROM tasks" 
+        print("hello")
     # else:
     #     query = "SELECT t.id, u.firstname, u.surname, SUM(s.amount) AS total FROM users AS u JOIN stars AS s ON u.id = s.user_id GROUP BY u.id;"
     try:
         cursor.execute(query)
         result = cursor.fetchall()
+        print(result)
         return result
     except Error as err:
         print(f"Error: '{err}'")
@@ -72,27 +74,16 @@ def insert_data(connection, query, data):
     except Error as err:
         print(f"Error: '{err}'")
 
-@app.get("/", response_class=HTMLResponse)
-def get_tasks(
-    request: Request,
-):
-    connection = create_server_connection()
-    sorted = True
-    tasks = getOptionalSortedTaskFromDB(connection, sorted)
-    return templates.TemplateResponse(
-        "index.html", {"request": request, "tasks": tasks}
-    )
 
 #root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
      
     connection = create_server_connection()
-    cursor = connection.cursor()
-    query = "SELECT id, taskname, taskstatus, taskcategory FROM tasks;"
-    cursor.execute(query)
-    notes = cursor.fetchall()    
-    return templates.TemplateResponse("index.html", {"request": request, "tasks": tasks})
+    sorted = True
+    task = getOptionalSortedTaskFromDB(connection, sorted)  
+    print(task)
+    return templates.TemplateResponse("index.html", {"request": request, "task": task})
 
 @app.post("/task", response_class=HTMLResponse)
 def post_tasks(request: Request, eingabe: Annotated[str, Form()], category: Annotated[str, Form()]

@@ -1,5 +1,5 @@
 USE todo;
 
-INSERT INTO tasks  (taskname, taskstatus, taskcategory) 
-VALUES ("Bernd muss mal wieder an die Luft", "open", "Freizeit");
+INSERT INTO tasks  (id, taskname, taskstatus, taskcategory) 
+VALUES (2, "Bernd muss mal wieder an die Luft", "open", "Freizeit");
 
