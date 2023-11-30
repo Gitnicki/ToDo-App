@@ -107,9 +107,9 @@ def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "tasks": task})
 
 @app.post("/", response_class=HTMLResponse)
-def post_tasks(taskname: Annotated[str, Form()], taskcategory: Annotated[str, Form()]):
+def post_tasks(taskname: Annotated[str, Form()], taskcategory: Annotated[str, Form()], taskstatus: Annotated[str, Form()]):
     connection = create_server_connection()
-    insertTaskintoDB(connection, taskname, taskcategory)
+    insertTaskintoDB(connection, taskname, taskcategory, taskstatus)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 @app.delete('/delete/<int:task_id>', response_class=HTMLResponse)
