@@ -3,9 +3,9 @@ from sqlalchemy.orm import relationship
 from database import Base
 
 class User(Base):
-    __tablename__ = "todo"
+    __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, index=True)
-    todoitem = Column(String)
-    itemstatus = Column(String)
-    category = Column(String)
+    taskname = Column(String)
+    taskstatus = str = "open"
+    taskcategory = Column(String)

@@ -33,20 +33,19 @@ def getOptionalSortedTaskFromDB(connection, sorted):
     cursor = connection.cursor()
     if sorted:
         query = "SELECT id, taskname, taskstatus, taskcategory FROM tasks" 
-        print("hello")
     try:
         cursor.execute(query)
         result = cursor.fetchall()
-        print(result)
         return result
     except Error as err:
         print(f"Error: '{err}'")
         return None
     
-def insertTaskintoDB(connection, taskname, taskstatus, taskcategory):
+def insertTaskintoDB(connection, taskname, taskcategory):
     cursor = connection.cursor()
-    query = "INSERT INTO tasks(taskname, taskstatus, taskcategory) VALUES(%s, %s, %s)" 
-    data = (taskname, taskstatus, taskcategory)
+    query = "INSERT INTO tasks(taskname, taskcategory) VALUES(%s, %s)" 
+    data = (taskname, taskcategory)
+    print(data)
     try:
         cursor.execute(query, data)
         connection.commit()
@@ -77,17 +76,16 @@ def select_data(connection, query):
 #root-route
 @app.get('/', response_class=HTMLResponse)
 def read_root(request: Request):
-     
     connection = create_server_connection()
     sorted = True
     task = getOptionalSortedTaskFromDB(connection, sorted)  
-    print(task)
     return templates.TemplateResponse("index.html", {"request": request, "tasks": task})
 
 @app.post("/", response_class=HTMLResponse)
-def post_tasks(taskname: Annotated[str, Form()], taskstatus: Annotated[str, Form()], taskcategory: Annotated[str, Form()]):
+def post_tasks(taskname: Annotated[str, Form()], taskcategory: Annotated[str, Form()]):
     connection = create_server_connection()
-    insertTaskintoDB(connection, taskname, taskstatus, taskcategory)
+    print(taskname)
+    insertTaskintoDB(connection, taskname, taskcategory)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
 if __name__ == "__main__":
