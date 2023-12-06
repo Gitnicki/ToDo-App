@@ -1,2 +1,4 @@
-ToDo-App/requirements.txt
+requirements.txt
 .env
+env
+__pycache__

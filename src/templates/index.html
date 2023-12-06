@@ -60,7 +60,14 @@
                                                 </form>
                                                 <form action="/update" method="post" class="w-50">
                                                     <input type="hidden" name="id" value="{{task[0]}}">
+
+                                                    {% if task[2] == "open" %}
                                                     <button type="submit" class="btn btn-success ms-1">Start</button>
+                                                    {% elif task[2] == "in progress" %}
+                                                    <button type="submit" class="btn btn-warning ms-1">In Progress</button>
+                                                    {% else %}
+                                                    <button type="submit" class="btn btn-dark ms-1" disabled>Finished</button>
+                                                    {% endif %}
                                                 </form>
                                             </td>
                                         </tr>

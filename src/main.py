@@ -1,27 +1,29 @@
+import os
 from typing import Annotated 
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import Request, FastAPI, Form, HTTPException
 import mysql.connector 
 from mysql.connector import Error
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 
 app =FastAPI(title="ToDo-List", version="0.0.1", openapi_url="/openapi.json")
 templates = Jinja2Templates(directory="./templates")
 
-# load_dotenv()
-config = dotenv_values(".env")
+load_dotenv()
+
 
 # Serverconnection herstellen
 def create_server_connection():
     connection = None
-    host_name = config.get("DB_HOST")
-    user_name = config.get("DB_USER")
-    user_password = config.get("DB_PASSWORD")
-    db_name = config.get("DB_NAME")
+    host_name = os.getenv("DB_HOST")
+    print("##########", host_name)
+    user_name = os.getenv("DB_USER")
+    user_password = os.getenv("DB_PASSWORD")
+    db_name = os.getenv("DB_NAME")
     try:
         connection = mysql.connector.connect(
-            host=host_name, user=user_name, passwd=user_password, database=db_name
+            host=host_name, user=user_name, password=user_password, database=db_name
         )
         print("MySQL Database connection successful")
     except Error as err:
@@ -32,7 +34,7 @@ def create_server_connection():
 def getOptionalSortedTaskFromDB(connection, sorted):
     cursor = connection.cursor()
     if sorted:
-        query = "SELECT id, taskname, taskstatus, taskcategory FROM tasks" 
+        query = "SELECT * FROM tasks" 
     try:
         cursor.execute(query)
         result = cursor.fetchall()
@@ -65,7 +67,14 @@ def deleteTaskDB(connection, id):
 
 def updateTasksintoDB(connection, id):
     cursor = connection.cursor()
-    query = "UPDATE tasks SET taskstatus='in progress' WHERE id=%s"
+    query = """
+    UPDATE tasks SET taskstatus = CASE 
+        WHEN taskstatus = 'open' THEN 'in progress'
+        WHEN taskstatus = 'in progress' THEN 'finished'
+        ELSE taskstatus
+    END
+    WHERE id = %s;
+    """
     id = [id]
     try:
         cursor.execute(query, id)
@@ -119,7 +128,7 @@ def delete_task(id: Annotated[int, Form()]):
     deleteTaskDB(connection, id)
     return RedirectResponse(url="http://localhost:8000/", status_code=303)
 
-@app.post('/update')
+@app.post('/update' , response_class=RedirectResponse)
 def update_status(id: Annotated[int, Form()]):
     connection = create_server_connection()
     updateTasksintoDB(connection, id)
@@ -127,4 +136,4 @@ def update_status(id: Annotated[int, Form()]):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
